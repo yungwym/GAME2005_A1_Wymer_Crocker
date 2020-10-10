@@ -130,9 +130,15 @@ void PlayScene::start()
 	addChild(m_pPlayer);
 	m_playerFacingRight = true;
 
+	//Enemy Sprite
+	m_pEnemy = new Enemy();
+	addChild(m_pEnemy);
+
 	//Ball Sprite
 	m_pBall = new Target();
 	addChild(m_pBall);
+
+	
 
 	// Back Button
 	m_pBackButton = new Button("../Assets/textures/backButton.png", "backButton", BACK_BUTTON);
@@ -192,8 +198,10 @@ void PlayScene::GUI_Function() const
 	
 	ImGui::Begin("Game Physics - Assignment 1", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
 
+	static int xPlayerPos = 100;
 	if(ImGui::Button("Throw Ball"))
 	{
+		m_pBall->throwPosition = glm::vec2(xPlayerPos, 400);
 		m_pBall->throwBall();
 	}
 
@@ -206,7 +214,7 @@ void PlayScene::GUI_Function() const
 	}
 
 	//Player Position
-	static int xPlayerPos = 100;
+	
 	if (ImGui::SliderInt("Player Position X", &xPlayerPos, 0, 800))
 	{
 		m_pPlayer->getTransform()->position.x = xPlayerPos;
@@ -217,7 +225,7 @@ void PlayScene::GUI_Function() const
 	static int xEnemyPosition = 485;
 	if (ImGui::SliderInt("Enemy Position X", &xEnemyPosition, 0, 800))
 	{
-
+		m_pEnemy->getTransform()->position.x = xEnemyPosition;
 	}
 
 	//Desired Angle
