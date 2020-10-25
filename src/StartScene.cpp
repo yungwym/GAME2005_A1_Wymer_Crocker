@@ -15,7 +15,7 @@ StartScene::~StartScene()
 void StartScene::draw()
 {
 
-	TextureManager::Instance()->draw("StartScene", 400, 300, 0, 255, true);
+	TextureManager::Instance()->draw("StartScreen", 400, 300, 0, 255, true);
 
 	drawDisplayList();
 }
@@ -49,17 +49,13 @@ void StartScene::handleEvents()
 void StartScene::start()
 {
 
-	TextureManager::Instance()->load("../Assets/textures/Background.png", "StartScene");
+	TextureManager::Instance()->load("../Assets/textures/StartScreen.png", "StartScreen");
 
 	const SDL_Color blue = { 0, 0, 255, 255 };
 	
-	m_pInstructionsLabel = new Label("Press 1 to Play", "Consolas", 40, blue, glm::vec2(400.0f, 520.0f));
-	m_pInstructionsLabel->setParent(this);
-	addChild(m_pInstructionsLabel);
-
 	// Start Button
 	m_pStartButton = new Button();
-	m_pStartButton->getTransform()->position = glm::vec2(400.0f, 400.0f); 
+	m_pStartButton->getTransform()->position = glm::vec2(400.0f, 275.0f); 
 
 	m_pStartButton->addEventListener(CLICK, [&]()-> void
 	{
@@ -77,6 +73,27 @@ void StartScene::start()
 		m_pStartButton->setAlpha(255);
 	});
 	addChild(m_pStartButton);
+
+	//Instructions Button
+	m_pInstructButton = new Button("../Assets/textures/InstructionsButton.png", "InstructionButton", INSTRUCT_BUTTON);
+	m_pInstructButton->getTransform()->position = glm::vec2(400.0f, 350.0f);
+
+	m_pInstructButton->addEventListener(CLICK, [&]()-> void
+		{
+			m_pInstructButton->setActive(false);
+			TheGame::Instance()->changeSceneState(PLAY_SCENE);
+		});
+
+	m_pInstructButton->addEventListener(MOUSE_OVER, [&]()->void
+		{
+			m_pInstructButton->setAlpha(128);
+		});
+
+	m_pInstructButton->addEventListener(MOUSE_OUT, [&]()->void
+		{
+			m_pInstructButton->setAlpha(255);
+		});
+	addChild(m_pInstructButton);
 
 	
 }

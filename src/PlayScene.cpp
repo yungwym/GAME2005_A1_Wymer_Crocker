@@ -1,6 +1,7 @@
 #include "PlayScene.h"
 #include "Game.h"
 #include "EventManager.h"
+#include "Util.h"
 
 // required for IMGUI
 #include "imgui.h"
@@ -17,7 +18,7 @@ PlayScene::~PlayScene()
 
 void PlayScene::draw()
 {
-	TextureManager::Instance()->draw("playScene", 400, 300, 0, 255, true);
+	TextureManager::Instance()->draw("PlayScreen", 400, 300, 0, 255, true);
 
 	drawDisplayList();
 	SDL_SetRenderDrawColor(Renderer::Instance()->getRenderer(), 255, 255, 255, 255);
@@ -50,23 +51,23 @@ void PlayScene::handleEvents()
 			const auto deadZone = 10000;
 			if (EventManager::Instance().getGameController(0)->LEFT_STICK_X > deadZone)
 			{
-				m_pPlayer->setAnimationState(PLAYER_RUN_RIGHT);
+				//m_pPlayer->setAnimationState(PLAYER_RUN_RIGHT);
 				m_playerFacingRight = true;
 			}
 			else if (EventManager::Instance().getGameController(0)->LEFT_STICK_X < -deadZone)
 			{
-				m_pPlayer->setAnimationState(PLAYER_RUN_LEFT);
+			//	m_pPlayer->setAnimationState(PLAYER_RUN_LEFT);
 				m_playerFacingRight = false;
 			}
 			else
 			{
 				if (m_playerFacingRight)
 				{
-					m_pPlayer->setAnimationState(PLAYER_IDLE_RIGHT);
+					//m_pPlayer->setAnimationState(PLAYER_IDLE_RIGHT);
 				}
 				else
 				{
-					m_pPlayer->setAnimationState(PLAYER_IDLE_LEFT);
+					//m_pPlayer->setAnimationState(PLAYER_IDLE_LEFT);
 				}
 			}
 		}
@@ -78,23 +79,23 @@ void PlayScene::handleEvents()
 	{
 		if (EventManager::Instance().isKeyDown(SDL_SCANCODE_A))
 		{
-			m_pPlayer->setAnimationState(PLAYER_RUN_LEFT);
+		//	m_pPlayer->setAnimationState(PLAYER_RUN_LEFT);
 			m_playerFacingRight = false;
 		}
 		else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_D))
 		{
-			m_pPlayer->setAnimationState(PLAYER_RUN_RIGHT);
+			//m_pPlayer->setAnimationState(PLAYER_RUN_RIGHT);
 			m_playerFacingRight = true;
 		}
 		else
 		{
 			if (m_playerFacingRight)
 			{
-				m_pPlayer->setAnimationState(PLAYER_IDLE_RIGHT);
+				//m_pPlayer->setAnimationState(PLAYER_IDLE_RIGHT);
 			}
 			else
 			{
-				m_pPlayer->setAnimationState(PLAYER_IDLE_LEFT);
+				//m_pPlayer->setAnimationState(PLAYER_IDLE_LEFT);
 			}
 		}
 	}
@@ -120,89 +121,52 @@ void PlayScene::start()
 {
 
 	//Load Background and Textures 
-	TextureManager::Instance()->load("../Assets/textures/PlayScene.png", "playScene");
+	TextureManager::Instance()->load("../Assets/textures/PlayScreen_F.png", "PlayScreen");
 
 	// Set GUI Title
 	m_guiTitle = "Play Scene";
 	
 	// Player Sprite
-	m_pPlayer = new Player();
-	addChild(m_pPlayer);
-	m_playerFacingRight = true;
+	m_pCrate = new Crate();
+	addChild(m_pCrate);
 
 	//Enemy Sprite
-	m_pEnemy = new Enemy();
-	addChild(m_pEnemy);
-
-	//Ball Sprite
-	m_pBall = new Target();
-	addChild(m_pBall);
-
-	
-
-	// Back Button
-	m_pBackButton = new Button("../Assets/textures/backButton.png", "backButton", BACK_BUTTON);
-	m_pBackButton->getTransform()->position = glm::vec2(300.0f, 550.0f);
-	m_pBackButton->addEventListener(CLICK, [&]()-> void
-	{
-		m_pBackButton->setActive(false);
-		TheGame::Instance()->changeSceneState(START_SCENE);
-	});
-
-	m_pBackButton->addEventListener(MOUSE_OVER, [&]()->void
-	{
-		m_pBackButton->setAlpha(128);
-	});
-
-	m_pBackButton->addEventListener(MOUSE_OUT, [&]()->void
-	{
-		m_pBackButton->setAlpha(255);
-	});
-	addChild(m_pBackButton);
-
-	// Next Button
-	m_pNextButton = new Button("../Assets/textures/nextButton.png", "nextButton", NEXT_BUTTON);
-	m_pNextButton->getTransform()->position = glm::vec2(500.0f, 550.0f);
-	m_pNextButton->addEventListener(CLICK, [&]()-> void
-	{
-		m_pNextButton->setActive(false);
-		TheGame::Instance()->changeSceneState(END_SCENE);
-	});
-
-	m_pNextButton->addEventListener(MOUSE_OVER, [&]()->void
-	{
-		m_pNextButton->setAlpha(128);
-	});
-
-	m_pNextButton->addEventListener(MOUSE_OUT, [&]()->void
-	{
-		m_pNextButton->setAlpha(255);
-	});
-
-	addChild(m_pNextButton);
+	m_pTriangle = new Triangle();
+	addChild(m_pTriangle);
 
 	/* Instructions Label */
 	m_pInstructionsLabel = new Label("Press the backtick (`) character to toggle Debug View", "Consolas");
-	m_pInstructionsLabel->getTransform()->position = glm::vec2(Config::SCREEN_WIDTH * 0.5f, 500.0f);
+	m_pInstructionsLabel->getTransform()->position = glm::vec2(Config::SCREEN_WIDTH * 0.5f, 530.0f);
 
 	addChild(m_pInstructionsLabel);
 }
 
 void PlayScene::GUI_Function() const
 {
+	//Variables
+	static int xTriPos = 400;
+	static int triHeight = 200;
+	static int triWidth = 300;
+
+	glm::vec2 lineAStart = glm::vec2(xTriPos, 410);
+	glm::vec2 lineAEnd = glm::vec2(xTriPos, triHeight);
+
+	static int yCratePos = 93;
+	static int xCratePos = 400;
+
+
 	// Always open with a NewFrame
 	ImGui::NewFrame();
 
 	// See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
 	//ImGui::ShowDemoWindow();
 	
-	ImGui::Begin("Game Physics - Assignment 1", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
+	ImGui::Begin("Game Physics - Assignment 2", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
 
-	static int xPlayerPos = 100;
-	if(ImGui::Button("Throw Ball"))
+	
+	if(ImGui::Button("Drop Crate"))
 	{
-		m_pBall->throwPosition = glm::vec2(xPlayerPos, 400);
-		m_pBall->throwBall();
+		
 	}
 
 	ImGui::Separator();
@@ -210,36 +174,40 @@ void PlayScene::GUI_Function() const
 	static bool isGravityEnabled = false;
 	if (ImGui::Checkbox("Gravity", &isGravityEnabled))
 	{
-		m_pBall->isGravityEnabled = isGravityEnabled;
+		//m_pBall->isGravityEnabled = isGravityEnabled;
 	}
 
-	//Player Position
+	if (ImGui::SliderInt("Triangle Position X", &xTriPos, 45, 590))
+	{
+		m_pTriangle->getTransform()->position.x = xTriPos;
+		m_pTriangle->setLineA(triHeight);
+		m_pTriangle->setLineB(triWidth);
+	}
+
+	if (ImGui::SliderInt("Triangle Height", &triHeight, 10, 235))
+	{
+		m_pTriangle->setLineA(triHeight);
+	}
+
+
+	if (ImGui::SliderInt("Triangle Width", &triWidth, 10, 700))
+	{
+		m_pTriangle->setLineB(triWidth);
+	}
+
+	ImGui::Separator();
+	ImGui::Spacing();
+	//Crate Position  
 	
-	if (ImGui::SliderInt("Player Position X", &xPlayerPos, 0, 800))
+	if (ImGui::SliderInt("Crate Position X", &xCratePos, 90, 710))
 	{
-		m_pPlayer->getTransform()->position.x = xPlayerPos;
-		m_pBall->throwPosition = glm::vec2(xPlayerPos, 400);
+		m_pCrate->getTransform()->position.x = xCratePos;
 	}
 
-	//Target/StormTrooper Position 
-	static int xEnemyPosition = 485;
-	if (ImGui::SliderInt("Enemy Position X", &xEnemyPosition, 0, 800))
-	{
-		m_pEnemy->getTransform()->position.x = xEnemyPosition;
-	}
 
-	//Desired Angle
-	static float desiredAngle = 15;
-	if (ImGui::SliderFloat("Desired Angle", &desiredAngle, 0, 90))
+	if (ImGui::SliderInt("Crate Position Y", &yCratePos, 80, 230))
 	{
-		m_pBall->angle = desiredAngle;
-	}
-
-	//Desired Velocity
-	static float desiredVelocity = 95;
-	if (ImGui::SliderFloat("Desired Velocity", &desiredVelocity, 0, 200))
-	{
-		m_pBall->horizontalVelocity = desiredVelocity;
+		m_pCrate->getTransform()->position.y = yCratePos;
 	}
 
 	ImGui::End();

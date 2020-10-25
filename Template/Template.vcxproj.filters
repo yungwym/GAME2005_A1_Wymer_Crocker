@@ -51,9 +51,6 @@
     <ClCompile Include="..\src\TextureManager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Player.cpp">
-      <Filter>Game Objects</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\PlayScene.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
@@ -124,6 +121,15 @@
       <Filter>IMGUI</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Enemy.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Player.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Triangle.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Crate.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
   </ItemGroup>
@@ -261,6 +267,12 @@
       <Filter>IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Enemy.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Triangle.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Crate.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
   </ItemGroup>
