@@ -18,6 +18,12 @@ public:
 	void setLineA(float endY);
 	void setLineB(float endX);
 
+	glm::vec2 getLineCStart();
+	glm::vec2 getLineCEnd();
+
+	glm::vec2 getLineAStart();
+	glm::vec2 getLineAEnd();
+
 private:
 
 	glm::vec2 lineAStart;
@@ -28,7 +34,6 @@ private:
 	glm::vec2 lineCEnd;
 
 	void drawTriangle();
-
 };
 
 #endif // !__TRIANGLE__

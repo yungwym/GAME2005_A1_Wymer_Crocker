@@ -11,6 +11,7 @@
 PlayScene::PlayScene()
 {
 	PlayScene::start();
+
 }
 
 PlayScene::~PlayScene()
@@ -130,13 +131,15 @@ void PlayScene::start()
 	m_pCrate = new Crate();
 	addChild(m_pCrate);
 
+	m_pCrate->setTheta(300.0f, 400.0f);
+
 	//Enemy Sprite
 	m_pTriangle = new Triangle();
 	addChild(m_pTriangle);
 
 	/* Instructions Label */
 	m_pInstructionsLabel = new Label("Press the backtick (`) character to toggle Debug View", "Consolas");
-	m_pInstructionsLabel->getTransform()->position = glm::vec2(Config::SCREEN_WIDTH * 0.5f, 530.0f);
+	m_pInstructionsLabel->getTransform()->position = glm::vec2(Config::SCREEN_WIDTH * 0.5f, 505.0f);
 
 	addChild(m_pInstructionsLabel);
 }
@@ -144,16 +147,14 @@ void PlayScene::start()
 void PlayScene::GUI_Function() const
 {
 	//Variables
-	static int xTriPos = 400;
-	static int triHeight = 200;
-	static int triWidth = 300;
+	static int xTriPos = 190;
+	static int triHeight = 300;
+	static int triWidth = 400;
+	static int friction = 42;
+	static int mass = 13;
 
 	glm::vec2 lineAStart = glm::vec2(xTriPos, 410);
 	glm::vec2 lineAEnd = glm::vec2(xTriPos, triHeight);
-
-	static int yCratePos = 93;
-	static int xCratePos = 400;
-
 
 	// Always open with a NewFrame
 	ImGui::NewFrame();
@@ -166,49 +167,47 @@ void PlayScene::GUI_Function() const
 	
 	if(ImGui::Button("Drop Crate"))
 	{
-		
+		m_pCrate->dropCrate(triHeight, triWidth);
 	}
 
 	ImGui::Separator();
-
-	static bool isGravityEnabled = false;
-	if (ImGui::Checkbox("Gravity", &isGravityEnabled))
-	{
-		//m_pBall->isGravityEnabled = isGravityEnabled;
-	}
 
 	if (ImGui::SliderInt("Triangle Position X", &xTriPos, 45, 590))
 	{
 		m_pTriangle->getTransform()->position.x = xTriPos;
 		m_pTriangle->setLineA(triHeight);
 		m_pTriangle->setLineB(triWidth);
+		m_pCrate->getTransform()->position.x = xTriPos + 15.0f;
+		m_pCrate->setTheta(triHeight, triWidth);
 	}
 
-	if (ImGui::SliderInt("Triangle Height", &triHeight, 10, 235))
+	if (ImGui::SliderInt("Triangle Height", &triHeight, 150, 350))
 	{
 		m_pTriangle->setLineA(triHeight);
+		m_pCrate->getTransform()->position.y = (482.5f - triHeight) - 47.0f;
+		m_pCrate->setTheta(triHeight, triWidth);
 	}
 
 
 	if (ImGui::SliderInt("Triangle Width", &triWidth, 10, 700))
 	{
 		m_pTriangle->setLineB(triWidth);
+		m_pCrate->setTheta(triHeight, triWidth);
 	}
 
 	ImGui::Separator();
-	ImGui::Spacing();
-	//Crate Position  
+
+	if (ImGui::SliderInt("Mass of Crate", &mass, 1, 100))
+	{
+		m_pCrate->setMass(mass);
+	}
+
+	if (ImGui::SliderInt("Coefficient of Friction", &friction, 1, 100))
+	{
+		m_pCrate->setFriction(friction);
+	}
+
 	
-	if (ImGui::SliderInt("Crate Position X", &xCratePos, 90, 710))
-	{
-		m_pCrate->getTransform()->position.x = xCratePos;
-	}
-
-
-	if (ImGui::SliderInt("Crate Position Y", &yCratePos, 80, 230))
-	{
-		m_pCrate->getTransform()->position.y = yCratePos;
-	}
 
 	ImGui::End();
 	

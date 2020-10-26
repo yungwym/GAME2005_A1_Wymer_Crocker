@@ -23,6 +23,8 @@ public:
 	virtual void handleEvents() override;
 	virtual void start() override;
 
+	void handleCollisions();
+
 private:
 	// IMGUI Function
 	void GUI_Function() const;
@@ -38,6 +40,7 @@ private:
 
 	// UI Items
 	Label* m_pInstructionsLabel;
+
 };
 
 #endif /* defined (__PLAY_SCENE__) */
